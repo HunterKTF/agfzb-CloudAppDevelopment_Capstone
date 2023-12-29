@@ -7,12 +7,12 @@ const { IamAuthenticator } = require('ibm-cloud-sdk-core');
 
 async function main(params) {
       const authenticator = new IamAuthenticator({ apikey: params.IAM_API_KEY })
-      const cloudant = CloudantV1.newInstance({
+      const service = CloudantV1.newInstance({
           authenticator: authenticator
       });
-      cloudant.setServiceUrl(params.COUCH_URL);
+      service.setServiceUrl(params.COUCH_URL);
       try {
-        let dbList = await cloudant.getAllDbs();
+        let dbList = await service.getAllDbs();
         return { "dbs": dbList.result };
       } catch (error) {
           return { error: error.description };

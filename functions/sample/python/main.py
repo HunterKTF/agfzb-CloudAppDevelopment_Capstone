@@ -25,6 +25,12 @@ def main(param_dict):
             connect=True,
         )
         print(f"Databases: {client.all_dbs()}")
+        
+        dbs = client.Databases()
+        print(dbs)
+
+        # dealers_db = client["dealerships"]
+        # print(f"Dealerships: {dealers_db}")
     except CloudantException as cloudant_exception:
         print("unable to connect")
         return {"error": cloudant_exception}
@@ -33,3 +39,10 @@ def main(param_dict):
         return {"error": err}
 
     return {"dbs": client.all_dbs()}
+
+if __name__ == '__main__':
+    params = {
+        "COUCH_USERNAME": "3610b977-ab5f-4e2f-bba6-e07690c84a15-bluemix",
+        "IAM_API_KEY": "3rNpdz9wBXiOaEyCEio0G42ERPNdz57NMZ0XfL-1tuUY"
+    }
+    main(params)
