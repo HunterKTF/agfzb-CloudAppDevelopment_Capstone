@@ -25,7 +25,6 @@ def main(param_dict):
             connect=True,
         )
         print(f"Databases: {client.all_dbs()}")
-        
         dbs = client.Databases()
         print(dbs)
 
