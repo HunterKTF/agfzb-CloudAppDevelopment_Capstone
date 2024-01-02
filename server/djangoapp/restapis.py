@@ -7,6 +7,7 @@ from ibm_watson.natural_language_understanding_v1 \
     import Features, SentimentOptions
 
 import requests
+import random
 import json
 import os
 
@@ -63,25 +64,28 @@ def get_request(url, params, **kwargs):
 # Create a `post_request` to make HTTP POST requests
 # e.g., response = requests.post(url, params=kwargs, json=payload)
 def post_request(url, json_payload, **kwargs):
-    params={
-        "IAM_API_KEY":IAM_API_KEY,
-        "COUCH_URL":COUCH_URL,
-        "dealership":json_payload["dealership"],
-        "name":json_payload["name"],
-        "purchase":json_payload["purchase"],
-        "review":json_payload["review"],
-        "purchase_date":json_payload["purchase_date"],
-        "car_make":json_payload["car_make"],
-        "car_model":json_payload["car_model"],
-        "car_year":json_payload["car_year"],
-        "id":json_payload["id"],
-        "time":json_payload["time"]
-    }
-    response = requests.post(url, params=params, headers={'Content-Type': 'application/json'})
+    doc_id = str(random.randrange(1000000000000000000, 9999999999999999999, 12322))
 
-    status_code = response.status_code
-    print("With status {}".format(status_code))
-    return response
+    params = {
+        "IAM_API_KEY":os.getenv('IAM_API_KEY'),
+        "COUCH_URL":os.getenv('COUCH_URL'),
+        "name":json_payload['name'],
+        "dealership":json_payload['dealership'],
+        "review":json_payload['review'],
+        "purchase":json_payload['purchase'],
+        "purchase_date":json_payload['purchase_date'],
+        "car_make":json_payload['car_make'],
+        "car_model":json_payload['car_model'],
+        "car_year":json_payload['car_year'],
+        "date":json_payload['date'],
+        "doc_id":doc_id
+    }
+
+    # Get results and print response
+    results = requests.put(url, params)
+    print(results.status_code)
+
+    return results.status_code
 
 
 # Create a get_dealers_from_cf method to get dealers from a cloud function
@@ -144,8 +148,7 @@ def get_dealer_reviews_from_cf(url, dealer_id):
                                       car_make=docs["car_make"],
                                       car_model=docs["car_model"],
                                       car_year=docs["car_year"],
-                                      sentiment=analyze_review_sentiments(docs["review"]),
-                                      id_r=docs["id"])
+                                      sentiment=analyze_review_sentiments(docs["review"]))
             # Append results from review_obj
             results.append(review_obj)
     return results
@@ -168,8 +171,6 @@ def analyze_review_sentiments(text, **kwargs):
     if json_result:
         sentiment_value = json_result["sentiment"]["document"]["label"]
 
-    else:
-        sentiment_value = "neutral"
-
+    print(sentiment_value)
     return sentiment_value
     

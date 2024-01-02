@@ -23,11 +23,10 @@
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     {% if user.is_authenticated %}
-                    <!-- TODO: point to add review -->
-                    
                     <li>
-                        <a class="btn btn-link" href="#">{{ user.first_name }}({{ user.username }})</a>
+                        <a class="btn btn-link" href="#">{{ user.first_name }} ({{ user.username }})</a>
                         <a class="btn btn-link" href="{% url 'djangoapp:logout' %}">Logout</a>
+                        <a class="btn btn-link" href="{% url 'djangoapp:add_review_details' dealer_id %}">Add Review</a>
                     </li>
                     {% else %}
                     <li>
@@ -47,7 +46,7 @@
         </nav>
 
         <!-- Add reviews as cards -->
-        <h2>Reviews for {{dealer_name}}</h2>
+        <h2>Reviews for dealer: {{dealer_name}}</h2>
         <div class="card-columns">
             {% for review in reviews_list %}
                 <div class="card">
